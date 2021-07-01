@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Gaia.LogService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GaiaLogModule\GaiaLogModule.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+    </ItemGroup>
+
+</Project>
