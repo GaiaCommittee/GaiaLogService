@@ -54,6 +54,7 @@ namespace Gaia.LogService
             }
             catch (Exception error)
             {
+                Subscriber = null;
                 Logger = new LogRecorder {PrintToConsole = false};
                 Logger.RecordError(error.Message);
                 Logger.RecordError($"Failed to connect the Redis server on {ip}:{port.ToString()}");

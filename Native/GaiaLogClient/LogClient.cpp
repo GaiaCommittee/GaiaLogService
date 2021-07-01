@@ -18,6 +18,7 @@ namespace Gaia::LogService
             }
         }catch (std::exception& error)
         {
+            Connection.reset();
             Logger = std::make_unique<LogRecorder>();
             Logger->RecordError(error.what(), Author);
             Logger->RecordError("Failed to connect the Redis server on " + ip + ":" + std::to_string(port));
