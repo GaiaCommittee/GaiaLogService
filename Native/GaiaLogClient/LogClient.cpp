@@ -12,7 +12,7 @@ namespace Gaia::LogService
             Connection = std::make_unique<sw::redis::Redis>("tcp://" + ip + ":" + std::to_string(port));
             if (Connection->publish("logs/record",
                                     LogRecorder::GenerateLogText("Log service client connected.",
-                                    LogRecorder::Severity::Message, Author)) <1)
+                                                                 LogRecorder::Severity::Message, Author)) <1)
             {
                 throw std::runtime_error("No log server detected on " + ip + ":" + std::to_string(port));
             }
@@ -24,6 +24,11 @@ namespace Gaia::LogService
             Logger->RecordError("Failed to connect the Redis server on " + ip + ":" + std::to_string(port));
         }
     }
+
+    /// Reuse the connection to a Redis server.
+    /// Reuse the connection to a Redis server.
+    LogClient::LogClient(std::shared_ptr<sw::redis::Redis> connection) : Connection(std::move(connection))
+    {}
 
     /// Record a raw text into the log.
     void LogClient::RecordRawText(const std::string& text)

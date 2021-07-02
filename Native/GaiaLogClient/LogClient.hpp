@@ -21,7 +21,7 @@ namespace Gaia::LogService
         /// Local file log recorder.
         std::unique_ptr<LogRecorder> Logger;
         /// Remote log service connection.
-        std::unique_ptr<sw::redis::Redis> Connection;
+        std::shared_ptr<sw::redis::Redis> Connection;
 
         /// Record a raw text into the log.
         void RecordRawText(const std::string& text);
@@ -38,6 +38,8 @@ namespace Gaia::LogService
          * @param ip IP address of the Redis server.
          */
         explicit LogClient(unsigned int port = 6379, const std::string& ip = "127.0.0.1");
+        /// Reuse the connection to a Redis server.
+        explicit LogClient(std::shared_ptr<sw::redis::Redis> connection);
 
         /**
          * @brief Record a message log.
