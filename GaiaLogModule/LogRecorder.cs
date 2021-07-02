@@ -18,7 +18,7 @@ namespace Gaia.LogService
         /// <summary>
         /// Construct and open the corresponding log file.
         /// </summary>
-        public LogRecorder(string path = "")
+        public LogRecorder(string path = "./")
         {
             PrintToConsole = false;
             
