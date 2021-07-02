@@ -37,28 +37,34 @@ namespace Gaia.LogService
         /// </summary>
         /// <param name="port">Port of the Redis server.</param>
         /// <param name="ip">IP address of the Redis server.</param>
-        public LogClient(uint port = 6379, string ip = "127.0.0.1")
+        public LogClient(uint port = 6379, string ip = "127.0.0.1") : 
+            this(ConnectionMultiplexer.Connect($"{ip}:{port.ToString()}"))
+        { }
+
+        /// <summary>
+        /// Reuse the connection to a Redis server.
+        /// </summary>
+        /// <param name="connection">Connection to the Redis server.</param>
+        public LogClient(IConnectionMultiplexer connection)
         {
-            try
+            Subscriber = connection.GetSubscriber();
+            if (Subscriber.Publish(
+                "logs/record",
+                LogRecorder.GenerateLogText(
+                    "Log service client connected.",
+                    LogRecorder.Severity.Message, Author)) < 1)
             {
-                var connection = ConnectionMultiplexer.Connect($"{ip}:{port.ToString()}");
-                Subscriber = connection.GetSubscriber();
-                if (Subscriber.Publish(
-                    "logs/record", 
-                    LogRecorder.GenerateLogText(
-                        "Log service client connected.", 
-                        LogRecorder.Severity.Message, Author)) < 1)
-                {
-                    throw new Exception($"No log server detected on {ip}:{port.ToString()}");
-                }
-            }
-            catch (Exception error)
-            {
-                Subscriber = null;
                 Logger = new LogRecorder {PrintToConsole = false};
-                Logger.RecordError(error.Message);
-                Logger.RecordError($"Failed to connect the Redis server on {ip}:{port.ToString()}");
+                Subscriber = null;
             }
+        }
+
+        /// <summary>
+        /// Use a local log file.
+        /// </summary>
+        public LogClient()
+        {
+            Logger = new LogRecorder {PrintToConsole = false};
         }
         
         /// <summary>
