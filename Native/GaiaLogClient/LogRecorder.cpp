@@ -83,9 +83,7 @@ namespace Gaia::LogService
             default:
                 break;
         }
-        builder << "|";
-
-        builder << text;
+        builder << "|" << author << "|" << text;
 
         return builder.str();
     }
